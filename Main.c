@@ -27,35 +27,34 @@ int main()
                case '3':while(1);break;
                case '4':while(1);break;
                case '5':while(1);break;
-               case '6':while(1);break;
+               case '6':Print_All_Students(&Data_Base);break;
                case '7':Flag=False;break;
                default:printf("- Enter Valid Option !\n");break;
           }
      }
      return 0 ;
 }
+DataBase_Status Print_Student(students_t Student_Data)
+{
+          printf("Sudent ID:%ld\n",Student_Data.ID); 
+          printf("Fisrt Name:%s\n",Student_Data.F_Name) ;
+          printf("Last Name:%s\n",Student_Data.L_Name);
+          printf("GPA:%.2f\n",Student_Data.GPA);
+          printf("Number of courses:%s\n",Student_Data.Courses_ID);
+} 
 /********************************************************************
 * Syntax          : void printall(students_t *pp) 
 * Description     : Initialize The Stack
 * Parameters (in) : (Ptr To Stack)
 * Parameters (out): None
 ********************************************************************/
-/*DataBase_Status Print_All_Students(students_t *Student_Data) 
+DataBase_Status Print_All_Students(queue_t *Data_Base) 
 {
-     for(u8 i =0 ; i< 1 ; i++)
+     for(u8 Count=0;Count<Data_Base->size;Count++)
      {
-          printf("Sudent ID:%d\n",Student_Data->ID); 
-          printf("Fisrt Name:%s\n",Student_Data->F_Name) ;
-          printf("Last Name:%s\n",Student_Data->L_Name);
-          printf("GPA:%.2f\n",Student_Data->GPA);
-          printf("Number of courses:%d\n",Student_Data->Courses_Number);
-          printf("Courses_ID:");
-          for(u8 i=0 ; i< Student_Data->Courses_Number;i++)
-          {
-               printf("%d ",Student_Data->Courses_ID[i]);
-          }
+          Print_Student(Data_Base->elements[Count]);
      }
-}*/
+}
 /********************************************************************
 * Syntax          : void printall(students_t *pp) 
 * Description     : Initialize The Stack
@@ -76,7 +75,15 @@ DataBase_Status Add_Student(queue_t *Data_Base)
      printf("Enter GPA: ");
      scanf("%f",&Student_Data.GPA);
      printf("Number of courses: ");
-     scanf("%ld",&Student_Data.Courses_Number);
+     scanf("%s",Student_Data.Courses_ID);
+     //
+          printf("Sudent ID:%ld\n",Student_Data.ID); 
+          printf("Fisrt Name:%s\n",Student_Data.F_Name) ;
+          printf("Last Name:%s\n",Student_Data.L_Name);
+          printf("GPA:%.2f\n",Student_Data.GPA);
+          printf("Number of courses:%s\n",Student_Data.Courses_ID);
+     //
      Queue_Enqueue(Data_Base,Student_Data);
+
      return Flag;
 }

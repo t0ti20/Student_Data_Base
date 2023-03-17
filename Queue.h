@@ -31,11 +31,10 @@ typedef float f32;
 typedef enum{ZERO=0,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHTH,NINE,TEN}numbers_t;
 /*------------- Type Defs --------------*/
 typedef struct students_t{
-     u32 ID ;
+     u32 ID;
      u8 F_Name [30];
      u8 L_Name [30];
-     f32 GPA ; 
-     u32 Courses_Number ; 
+     f32 GPA ;
      u8 Courses_ID[5];
 }students_t;
 /*------------- Type Defs --------------*/

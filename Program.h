@@ -17,7 +17,8 @@ typedef enum
 } DataBase_Status; 
 
 /*----------- Functins To Use ---------*/
-DataBase_Status Print_All_Students(students_t *Student_Data);
+DataBase_Status Print_Student(students_t Student_Data);
+DataBase_Status Print_All_Students(queue_t *Data_Base);
 DataBase_Status Add_Student(queue_t *Data_Base);
 #endif
 /********************************************************************
