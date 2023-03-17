@@ -2,21 +2,23 @@
 #define _MAIN_H_
 /*---------- Include Files -------------*/
 #include <stdio.h>
+#include "Queue.h"
 /*****************************************
 ----------    GLOBAL DATA     ------------
 *****************************************/
+/*-------------- Define ----------------*/
+#define True             1
+#define False            0
 /*------------- Type Defs --------------*/
-typedef struct students_t{
-     int ID ; 
-     char f_name [30];
-     char l_name [30];
-     float GPA ; 
-     int courses_num ; 
-     int course_ID[5];
-}students_t; 
-typedef enum {false,true,ok} DataBase_Status; 
+typedef enum 
+{
+     Operation_Done      =1,
+     No_Students         =2,
+} DataBase_Status; 
+
 /*----------- Functins To Use ---------*/
-void printall(students_t *) ;
+DataBase_Status Print_All_Students(students_t *Student_Data);
+DataBase_Status Add_Student(queue_t *Data_Base);
 #endif
 /********************************************************************
  *  END OF FILE: Main.h
