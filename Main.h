@@ -6,6 +6,8 @@
 /*****************************************
 ----------    GLOBAL DATA     ------------
 *****************************************/
+/*------------- Variables --------------*/
+u8 Course_ID;
 /*-------------- Define ----------------*/
 #define True             1
 #define False            0
@@ -16,9 +18,13 @@ typedef enum
      No_Students         =2,
 } DataBase_Status; 
 /*----------- Functins To Use ---------*/
-DataBase_Status Print_Student(students_t Student_Data);
+
 DataBase_Status Print_All_Students(queue_t *Data_Base);
+DataBase_Status Course_ID_Search(queue_t *Data_Base);
+DataBase_Status Find_Student(queue_t *Data_Base);
 DataBase_Status Add_Student(queue_t *Data_Base);
+void Check_Course_ID(students_t Student_Data);
+void Print_Student(students_t Student_Data);
 #endif
 /********************************************************************
  *  END OF FILE: Main.h
