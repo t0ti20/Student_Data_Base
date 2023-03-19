@@ -82,8 +82,8 @@ DataBase_Status Course_ID_Search(queue_t *Data_Base)
 {
      DataBase_Status Flag=Operation_Done;
      printf("-------------------------------------------------\n");
-     printf("Option : ");
-     scanf(" %c",&Course_ID);
+     printf("Enter Course ID : ");
+     scanf(" %c",&Global_Course_ID);
      Queue_Traverse(Data_Base,Check_Course_ID);
      return Flag;
 }
@@ -97,7 +97,7 @@ void Check_Course_ID(students_t Student_Data)
      u8 *Index=Student_Data.Courses_ID;
      while (*Index)
      {
-          if(*Index==Course_ID)
+          if(*Index==Global_Course_ID)
           {
                Print_Student(Student_Data);
                break;
@@ -113,7 +113,7 @@ void Check_Course_ID(students_t Student_Data)
 void Print_Student(students_t Student_Data)
 {
      printf("--------------------------------\n");
-     printf("Sudent ID: %ld\n",Student_Data.ID); 
+     printf("Student ID: %ld\n",Student_Data.ID); 
      printf("Fisrt Name: %s\n",Student_Data.F_Name) ;
      printf("Last Name: %s\n",Student_Data.L_Name);
      printf("GPA: %.2f\n",Student_Data.GPA);
@@ -133,6 +133,21 @@ DataBase_Status Print_All_Students(queue_t *Data_Base)
      return Flag;
 }
 /********************************************************************
+* Syntax          : DataBase_Status Check_For_ID(queue_t *Data_Base)
+* Description     : Add Student To Data Base
+* Parameters (in) : (Ptr Of Data_Base)
+********************************************************************/
+DataBase_Status Check_For_ID(queue_t *Data_Base)
+{
+     Global_Flag = Operation_Done;
+     Queue_Traverse(Data_Base,Get_ID);
+     return Global_Flag;
+}
+void Get_ID(students_t Student_Data)
+{
+     if(Student_Data.ID==Global_ID)Global_Flag=Repeated_ID;
+}
+/********************************************************************
 * Syntax          : DataBase_Status Add_Student(queue_t *Data_Base)
 * Description     : Add Student To Data Base
 * Parameters (in) : (Ptr Of Data_Base)
@@ -144,19 +159,27 @@ DataBase_Status Add_Student(queue_t *Data_Base)
      printf("-------------------------------------------------\n");
      printf("Enter Student ID: ");
      scanf(" %ld",&Student_Data.ID);
-     /*Check For ID*/
-     printf("Enter First Name: ");
-     scanf(" %s",Student_Data.F_Name);
-     fflush(stdin);fflush(stdout);
-     printf("Enter Last Name: ");
-     scanf(" %s",Student_Data.L_Name);
-     fflush(stdin);fflush(stdout);
-     printf("Enter GPA: ");
-     scanf(" %f",&Student_Data.GPA);
-     fflush(stdin);fflush(stdout);
-     printf("Number of courses: ");
-     scanf(" %s",Student_Data.Courses_ID);
-     fflush(stdin);fflush(stdout);
-     Queue_Enqueue(Data_Base,Student_Data);
+     Global_ID=Student_Data.ID;
+     if(Check_For_ID(Data_Base)==Operation_Done)
+     {
+          printf("Enter First Name: ");
+          scanf(" %s",Student_Data.F_Name);
+          fflush(stdin);fflush(stdout);
+          printf("Enter Last Name: ");
+          scanf(" %s",Student_Data.L_Name);
+          fflush(stdin);fflush(stdout);
+          printf("Enter GPA: ");
+          scanf(" %f",&Student_Data.GPA);
+          fflush(stdin);fflush(stdout);
+          printf("Number of courses: ");
+          scanf(" %s",Student_Data.Courses_ID);
+          fflush(stdin);fflush(stdout);
+          Queue_Enqueue(Data_Base,Student_Data);
+     }
+     else
+     {
+          printf("You Have Entered Rebeated ID !\n");
+          Flag=Repeated_ID;
+     }
      return Flag;
 }
