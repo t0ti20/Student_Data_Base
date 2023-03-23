@@ -64,9 +64,9 @@ DataBase_Status Find_Student(queue_t *Data_Base)
           scanf(" %c",&Option);
           switch (Option)
                {
-                    case '1':;Flag=False;break;
-                    case '2':;Flag=False;break;
-                    case '3':Course_ID_Search(Data_Base);Flag=False;break;
+                    case '1':Search_By_ID(Data_Base);Flag=False;break;
+                    case '2':Serch_By_First_Name(Data_Base);Flag=False;break;
+                    case '3':Search_By_Course_ID(Data_Base);Flag=False;break;
                     case '4':Flag=False;break;
                     default:printf("- Enter Valid Option !\n");break;
                }
@@ -74,11 +74,11 @@ DataBase_Status Find_Student(queue_t *Data_Base)
      return Flag;
 }
 /********************************************************************
-* Syntax          : DataBase_Status Course_ID_Search(queue_t *Data_Base)
+* Syntax          : DataBase_Status Search_By_Course_ID(queue_t *Data_Base)
 * Description     : Search By ID Function
 * Parameters (in) : (Copy Of Data_Base)
 ********************************************************************/
-DataBase_Status Course_ID_Search(queue_t *Data_Base)
+DataBase_Status Search_By_Course_ID(queue_t *Data_Base)
 {
      DataBase_Status Flag=Operation_Done;
      printf("-------------------------------------------------\n");
@@ -182,4 +182,81 @@ DataBase_Status Add_Student(queue_t *Data_Base)
           Flag=Repeated_ID;
      }
      return Flag;
+}
+/********************************************************************
+* Syntax          : Serch_By_First_Name(students_t Student_Data) && void Check_First_Name(students_t Student_Data)
+* Description     : Print One Student Function
+* Parameters (in) : (Pointer to Student Data)
+* Pointers used (in Check_First_Name)   (1): ptr1 >>> Student_Data.F_Name for first name stored in database // 
+                                        (2): ptr2 >>> Global_F_Name for global name we entered in Serch_By_First_Name()//
+********************************************************************/
+DataBase_Status Serch_By_First_Name(queue_t *Data_Base)
+{
+     Global_Flag=Operation_Done;
+     printf("-------------------------------------------------\n");
+     printf("Enter First Name :");
+     scanf("%s",Global_F_Name); 
+     //printf("%s",Global_F_Name);
+     //scanf("%[^\n]s",& Global_F_Name);
+     //char * fname = "amh" ;
+     //Global_F_Name =fname ; 
+     //printf("%s",Global_F_Name) ; 
+     Global_Match == 0 ;
+     Queue_Traverse(Data_Base,Check_First_Name);
+     if(Global_Match == 0)printf("Name not found");
+     return Global_Flag ;    
+}
+
+
+void Check_First_Name(students_t Student_Data)
+{
+     char *ptr1 ,*ptr2 ;
+     //puts(Global_F_Name);
+     Global_Flag=Name_Not_Found;     
+     ptr1 =Student_Data.F_Name; 
+     ptr2 =Global_F_Name; 
+     int result = strcmp(ptr1,ptr2) ;
+     //printf("%d",result);
+     while(result==0)
+     {
+          printf("Student Found Successfully:\n") ;    
+          Print_Student(Student_Data); 
+          Global_Flag = Operation_Done ;
+          Global_Match = 1 ;
+          break;
+     }
+}
+/********************************************************************
+* Syntax          : Search_By_ID(students_t Student_Data) && void Check_ID(students_t Student_Data)
+* Description     : Search for ID
+* Parameters (in) : (Pointer to Student Data)
+* Pointers used (in Search_By_ID)  
+********************************************************************/
+DataBase_Status Search_By_ID(queue_t *Data_Base)
+{
+     Global_Match=0;
+     Global_Flag=Operation_Done;
+     printf("-------------------------------------------------\n");
+     printf("Enter ID :");
+     scanf("%ld",&Global_ID); 
+     Queue_Traverse(Data_Base,Check_ID);
+     if(Global_Match == 0)
+     {
+          printf("ID not found\n");
+          Global_Flag = ID_Not_Found; 
+     }
+     return Global_Flag ; 
+}
+
+
+
+void Check_ID (students_t Student_Data)
+{
+     Global_Flag = Operation_Done ;
+     if(Global_ID == Student_Data.ID)
+     {
+          printf("ID found....\n");
+          Print_Student(Student_Data);
+          Global_Match = 1 ;
+     }
 }
