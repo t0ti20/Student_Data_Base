@@ -10,14 +10,14 @@
 /*------------- Type Defs --------------*/
 typedef enum 
 {
-     Operation_Done      =1,
+     Operation_Done      =-1,
      No_Students         =2,
      Repeated_ID         =3,
      Name_Not_Found      =4,
      ID_Not_Found        =5, 
 } DataBase_Status; 
 /*------------- Variables --------------*/
-u32 Global_Match =0 ; 
+u32 Global_Match; 
 u32 Global_ID;
 u8  Global_F_Name[30];  
 u8 Global_Course_ID;
@@ -33,6 +33,7 @@ DataBase_Status Search_By_ID(queue_t *Data_Base);
 DataBase_Status Serch_By_First_Name(queue_t *Data_Base);
 DataBase_Status Check_For_ID(queue_t *Data_Base);
 DataBase_Status Add_Student(queue_t *Data_Base);
+DataBase_Status Delete_Student(queue_t *Data_Base);
 void Check_Course_ID(students_t Student_Data);
 void Print_Student(students_t Student_Data);
 void Get_ID(students_t Student_Data);

@@ -36,7 +36,7 @@ int main()
                case '1':Add_Student(&Data_Base);break;
                case '2':Find_Student(&Data_Base);break;
                case '3':while(1);break;
-               case '4':while(1);break;
+               case '4':Delete_Student(&Data_Base);break;
                case '5':while(1);break;
                case '6':Print_All_Students(&Data_Base);break;
                case '7':Flag=False;break;
@@ -44,6 +44,39 @@ int main()
           }
      }
      return 0 ;
+}
+/********************************************************************
+* Syntax          : 
+* Description     : 
+* Parameters (in) : 
+********************************************************************/
+DataBase_Status Delete_Student(queue_t *Data_Base)
+{
+     DataBase_Status Flag=ID_Not_Found;
+     printf("Enter Student ID: ");
+     scanf("%ld",&Global_ID);
+     for(Global_Match=ZERO;Global_Match<(Data_Base->size);Global_Match++)
+     {
+          if(Data_Base->elements[Global_Match].ID==Global_ID)
+          {
+               Flag=Operation_Done;
+               break;
+          }
+     }
+     if(Flag==Operation_Done)
+     {
+          for(;Global_Match<(Data_Base->size);Global_Match++)
+          {
+               Data_Base->elements[Global_Match]=Data_Base->elements[Global_Match+ONE];
+          }
+          Data_Base->size--;
+     }
+     else
+     {
+          printf("You Have Entered Invalid ID !\n");
+          Flag=ID_Not_Found;
+     }
+     return Flag;
 }
 /********************************************************************
 * Syntax          : DataBase_Status Find_Student(queue_t *Data_Base)
@@ -247,9 +280,6 @@ DataBase_Status Search_By_ID(queue_t *Data_Base)
      }
      return Global_Flag ; 
 }
-
-
-
 void Check_ID (students_t Student_Data)
 {
      Global_Flag = Operation_Done ;
