@@ -2,8 +2,8 @@
 #define _MAIN_H_
 /*---------- Include Files -------------*/
 #include <stdio.h>
-#include "Queue.h"
-#include<string.h>
+#include <string.h>
+#include "./Queue.h"
 /*****************************************
 ----------    GLOBAL DATA     ------------
 *****************************************/
@@ -23,8 +23,12 @@ u8  Global_F_Name[30];
 u8 Global_Course_ID;
 DataBase_Status Global_Flag;
 /*-------------- Define ----------------*/
-#define True                  1
-#define False                 0
+#ifndef True
+#define True                  (DataBase_Status)1
+#endif
+#ifndef False
+#define False                 (DataBase_Status)0
+#endif
 /*----------- Functins To Use ---------*/
 DataBase_Status Print_All_Students(queue_t *Data_Base);
 DataBase_Status Find_Student(queue_t *Data_Base);

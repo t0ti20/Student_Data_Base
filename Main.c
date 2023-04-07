@@ -243,11 +243,11 @@ DataBase_Status Serch_By_First_Name(queue_t *Data_Base)
 
 void Check_First_Name(students_t Student_Data)
 {
-     char *ptr1 ,*ptr2 ;
+     const char *ptr1 ,*ptr2 ;
      //puts(Global_F_Name);
      Global_Flag=Name_Not_Found;     
-     ptr1 =Student_Data.F_Name; 
-     ptr2 =Global_F_Name; 
+     ptr1 =(const char *)Student_Data.F_Name; 
+     ptr2 =(const char *)Global_F_Name; 
      int result = strcmp(ptr1,ptr2) ;
      //printf("%d",result);
      while(result==0)
