@@ -3,7 +3,7 @@
 *****************************************/
 #include "Main.h"
 /*****************************************
-----------    GLOBAL DATA     ------------
+----------    GLOBAL DATA     -----------
 *****************************************/
 queue_t Data_Base;
 int main()
@@ -12,9 +12,9 @@ int main()
      u8 Option;
      Queue_Initialization(&Data_Base);
      /*TEMP*/
-     students_t Student_1={1,"ahm","qwe",3.1,"13"};
-     students_t Student_2={2,"asd","gfd",4,"12"};
-     students_t Student_3={3,"zxc","bvc",3.6,"23"};
+     students_t Student_1={"ahm","qwe",1,3.1,"132"};
+     students_t Student_2={"asd","gfd",2,4,"12"};
+     students_t Student_3={"zxc","bvc",3,3.6,"232"};
      Queue_Enqueue(&Data_Base,Student_1);
      Queue_Enqueue(&Data_Base,Student_2);
      Queue_Enqueue(&Data_Base,Student_3);
@@ -27,56 +27,157 @@ int main()
           printf("-------------------------------------------------\n");
           printf("-------------------------------------------------\n");
           printf("Please Chose What To Do :\n");
-          printf("- 1) Add Student.\n- 2) Find Student.\n- 3) Count All Students.\n- 4) Delete Student.\n- 5) Update Student.\n- 6) Print All Students.\n- 7) Exit The Program.\n");
+          printf("- 1) Add Student From File.\n- 2) Add Student Manually.\n- 3) Find Student.\n- 4) Delete Student.\n- 5) Update Student.\n- 6) Print All Students.\n- 7) Exit The Program.\n");
           printf("Option : ");
           scanf(" %c",&Option);
           fflush(stdin);fflush(stdout);
           switch (Option)
           {
-               case '1':Add_Student(&Data_Base);break;
-               case '2':Find_Student(&Data_Base);break;
-               case '3':while(1);break;
+               case '1':Add_Student_From_File(&Data_Base);break;
+               case '2':Add_Student_Manual(&Data_Base);break;
+               case '3':Find_Student(&Data_Base);break;
                case '4':Delete_Student(&Data_Base);break;
-               case '5':while(1);break;
+               case '5':Update_Student(&Data_Base);break;
                case '6':Print_All_Students(&Data_Base);break;
                case '7':Flag=False;break;
-               default:printf("- Enter Valid Option !\n");break;
+               default:printf("xx Enter Valid Option xx\n");break;
           }
      }
      return 0 ;
 }
 /********************************************************************
-* Syntax          : 
-* Description     : 
-* Parameters (in) : 
+* Syntax          : DataBase_Status Update_Student(queue_t *Data_Base)
+* Description     : Update Data For Specific Student By ID 
+* Parameters (in) : (Copy Of Data_Base)
+********************************************************************/
+DataBase_Status Update_Student(queue_t *Data_Base)
+{
+     DataBase_Status Flag=ID_Not_Found;
+     printf("Enter Student ID: ");
+     scanf("%ld",&Global_ID);
+     Global_Flag=ID_Not_Found;
+     Queue_Traverse_Origin(Data_Base,Check_Data);
+     if(Global_Flag==ID_Not_Found)printf("xx You Have Entered Invalid ID xx\n");
+     return Flag;
+}
+void Check_Data(students_t *Student_Data)
+{
+     if(Student_Data->ID==Global_ID)
+     {
+          u8 Option,Courses=0;
+          printf("Choose What To Update\n- 1) First Name\n- 2) Last Name\n- 3) GPA\n- 4) Courses\n");
+          printf("Option : ");
+          scanf(" %c",&Option);
+          switch (Option)
+          {
+               case '1':
+                    printf("Enter First Name: ");
+                    scanf(" %s",Student_Data->F_Name);
+                    fflush(stdin);fflush(stdout);
+                    break;
+               case '2':
+                    printf("Enter Last Name: ");
+                    scanf(" %s",Student_Data->L_Name);
+                    fflush(stdin);fflush(stdout);
+                    break;
+               case '3':
+                    printf("Enter GPA: ");
+                    scanf(" %f",&Student_Data->GPA);
+                    fflush(stdin);fflush(stdout);
+                    break;
+               case '4':
+                    printf("Number Of Courses Assigned : ");
+                    scanf(" %hhd",&Courses);
+                    fflush(stdin);fflush(stdout);
+                    for(u8 Count=0;Count<Courses;Count++)
+                    {
+                         printf("Course [%d] = ",(Count+ONE));
+                         scanf("%hhd",&Student_Data->Courses_ID[Count]);
+                    }
+                    Student_Data->Courses_ID[Courses]=ZERO;
+                    break;
+               default:printf("xx Enter Valid Option xx\n");break;
+          }
+          Global_Flag=Operation_Done;
+     }
+}
+/********************************************************************
+* Syntax          : DataBase_Status Add_Student_From_File(queue_t *Data_Base)
+* Description     : Add Studen From DataBase File
+* Parameters (in) : (Copy Of Data_Base)
+********************************************************************/
+DataBase_Status Add_Student_From_File(queue_t *Data_Base)
+{
+     DataBase_Status Flag=Operation_Done;
+     students_t Student_Data;
+     FILE *fptr;
+     fptr = fopen("DataBase.txt", "r");// Open a file in read mode
+     char Line[100],Word[10]={ZERO};// Store the content of the file
+     while(fgets(Line, 100, fptr))
+     {
+          u8 Line_Counter=0,Word_Conter=0,Counter=0;
+          for(Word_Conter=0;Line[Line_Counter]!=' ';Word_Conter++,Line_Counter++)Word[Word_Conter]=Line[Line_Counter];
+          Word[Word_Conter]=ZERO;Line_Counter++;      /*ID*/
+          Student_Data.ID=atoi(Word);
+          for(Word_Conter=0;Line[Line_Counter]!=' ';Word_Conter++,Line_Counter++)Word[Word_Conter]=Line[Line_Counter];
+          Word[Word_Conter]=ZERO;Line_Counter++;      /*FIRST NAME*/             
+          strcpy(Student_Data.F_Name,Word);
+          for(Word_Conter=0;Line[Line_Counter]!=' ';Word_Conter++,Line_Counter++)Word[Word_Conter]=Line[Line_Counter];
+          Word[Word_Conter]=ZERO;Line_Counter++;      /*LAST NAME*/
+          strcpy(Student_Data.L_Name,Word);
+          for(Word_Conter=0;Line[Line_Counter]!=' ';Word_Conter++,Line_Counter++)Word[Word_Conter]=Line[Line_Counter];
+          Word[Word_Conter]=ZERO;Line_Counter++;      /*GPA*/
+          Student_Data.GPA=atof(Word);
+          for(Counter=0,Word_Conter=0;Line[Line_Counter];Line_Counter++)
+          {
+               if(Line[Line_Counter]==' ')            /*COURSES*/
+               {
+                    Word[Word_Conter]=ZERO;
+                    Student_Data.Courses_ID[Counter++]=(char)atoi(Word);
+                    Word_Conter=ZERO;
+                    continue;
+               }
+               Word[Word_Conter]=Line[Line_Counter];Word_Conter++;
+          }
+          Word[Word_Conter]=ZERO;
+          Student_Data.Courses_ID[Counter]=ZERO;
+          Global_ID=Student_Data.ID;
+          if(Check_For_ID(Data_Base)==Operation_Done)Queue_Enqueue(Data_Base,Student_Data);
+          else  printf("xx Rebeated ID Is Found And Ignored xx\n");
+     }
+     fclose(fptr);// Close the file
+     return Flag;
+}
+/********************************************************************
+* Syntax          : DataBase_Status Delete_Student(queue_t *Data_Base)
+* Description     : Delete Specific Student From Data Base
+* Parameters (in) : (Copy Of Data_Base)
 ********************************************************************/
 DataBase_Status Delete_Student(queue_t *Data_Base)
 {
      DataBase_Status Flag=ID_Not_Found;
      printf("Enter Student ID: ");
      scanf("%ld",&Global_ID);
-     for(Global_Match=ZERO;Global_Match<(Data_Base->size);Global_Match++)
+     Global_Flag=ID_Not_Found;
+     Global_Match=ZERO;
+     Global_Course_ID=ZERO;//Used To Store Index
+     Queue_Traverse(Data_Base,Check_Index);
+     if(Global_Flag==Operation_Done)
      {
-          if(Data_Base->elements[Global_Match].ID==Global_ID)
-          {
-               Flag=Operation_Done;
-               break;
-          }
+          Flag=Operation_Done;
+          Queue_Dequeue_Node(Data_Base,Global_Course_ID);
      }
-     if(Flag==Operation_Done)
-     {
-          for(;Global_Match<(Data_Base->size);Global_Match++)
-          {
-               Data_Base->elements[Global_Match]=Data_Base->elements[Global_Match+ONE];
-          }
-          Data_Base->size--;
-     }
-     else
-     {
-          printf("You Have Entered Invalid ID !\n");
-          Flag=ID_Not_Found;
-     }
+     else printf("xx You Have Entered Invalid ID xx\n");
      return Flag;
+}
+void Check_Index(students_t Student_Data)
+{
+     Global_Match++;
+     if(Student_Data.ID==Global_ID)
+     {
+          Global_Flag=Operation_Done;
+          Global_Course_ID=Global_Match;
+     }
 }
 /********************************************************************
 * Syntax          : DataBase_Status Find_Student(queue_t *Data_Base)
@@ -101,14 +202,14 @@ DataBase_Status Find_Student(queue_t *Data_Base)
                     case '2':Serch_By_First_Name(Data_Base);Flag=False;break;
                     case '3':Search_By_Course_ID(Data_Base);Flag=False;break;
                     case '4':Flag=False;break;
-                    default:printf("- Enter Valid Option !\n");break;
+                    default:printf("xx Enter Valid Option xx\n");break;
                }
      }
      return Flag;
 }
 /********************************************************************
 * Syntax          : DataBase_Status Search_By_Course_ID(queue_t *Data_Base)
-* Description     : Search By ID Function
+* Description     : Search By Course ID Function
 * Parameters (in) : (Copy Of Data_Base)
 ********************************************************************/
 DataBase_Status Search_By_Course_ID(queue_t *Data_Base)
@@ -116,26 +217,22 @@ DataBase_Status Search_By_Course_ID(queue_t *Data_Base)
      DataBase_Status Flag=Operation_Done;
      printf("-------------------------------------------------\n");
      printf("Enter Course ID : ");
-     scanf(" %c",&Global_Course_ID);
+     scanf(" %hhd",&Global_Course_ID);
+     Global_Flag=ID_Not_Found;
      Queue_Traverse(Data_Base,Check_Course_ID);
+     if(Global_Flag==ID_Not_Found)printf("xx Course ID Not Found xx\n");
      return Flag;
 }
-/********************************************************************
-* Syntax          : void Check_Course_ID(students_t Student_Data)
-* Description     : Check For Course ID
-* Parameters (in) : (Copy Of Student Data)
-********************************************************************/
 void Check_Course_ID(students_t Student_Data)
 {
-     u8 *Index=Student_Data.Courses_ID;
-     while (*Index)
+     for(u8 Counter=0;Student_Data.Courses_ID[Counter];Counter++)
      {
-          if(*Index==Global_Course_ID)
+          if(Student_Data.Courses_ID[Counter]==Global_Course_ID)
           {
+               Global_Flag=Operation_Done;
                Print_Student(Student_Data);
                break;
           }
-          Index++;
      }
 }
 /********************************************************************
@@ -150,8 +247,9 @@ void Print_Student(students_t Student_Data)
      printf("Fisrt Name: %s\n",Student_Data.F_Name) ;
      printf("Last Name: %s\n",Student_Data.L_Name);
      printf("GPA: %.2f\n",Student_Data.GPA);
-     printf("Number of courses:%s\n",Student_Data.Courses_ID);
-     printf("--------------------------------\n");
+     printf("Courses Assigned: ");
+     for(u8 Counter=0;Student_Data.Courses_ID[Counter];Counter++)printf("%d ",Student_Data.Courses_ID[Counter]);
+     printf("\n--------------------------------\n");
 }
 /********************************************************************
 * Syntax          : DataBase_Status Print_All_Students(queue_t *Data_Base) 
@@ -162,12 +260,14 @@ DataBase_Status Print_All_Students(queue_t *Data_Base)
 {
      DataBase_Status Flag=Operation_Done;
      printf("-------------------------------------------------\n");
+     printf("-> Students Count = %d\n",Data_Base->size);
+     printf("-------------------------------------------------\n");
      Queue_Traverse(Data_Base,Print_Student);
      return Flag;
 }
 /********************************************************************
 * Syntax          : DataBase_Status Check_For_ID(queue_t *Data_Base)
-* Description     : Add Student To Data Base
+* Description     : Check For Rebeated ID In Database
 * Parameters (in) : (Ptr Of Data_Base)
 ********************************************************************/
 DataBase_Status Check_For_ID(queue_t *Data_Base)
@@ -185,10 +285,11 @@ void Get_ID(students_t Student_Data)
 * Description     : Add Student To Data Base
 * Parameters (in) : (Ptr Of Data_Base)
 ********************************************************************/
-DataBase_Status Add_Student(queue_t *Data_Base)
+DataBase_Status Add_Student_Manual(queue_t *Data_Base)
 {
      DataBase_Status Flag=Operation_Done;
      students_t Student_Data;
+     u8 Courses;
      printf("-------------------------------------------------\n");
      printf("Enter Student ID: ");
      scanf(" %ld",&Student_Data.ID);
@@ -204,14 +305,20 @@ DataBase_Status Add_Student(queue_t *Data_Base)
           printf("Enter GPA: ");
           scanf(" %f",&Student_Data.GPA);
           fflush(stdin);fflush(stdout);
-          printf("Number of courses: ");
-          scanf(" %s",Student_Data.Courses_ID);
+          printf("Number Of Courses Assigned : ");
+          scanf(" %hhd",&Courses);
           fflush(stdin);fflush(stdout);
+          for(u8 Count=0;Count<Courses;Count++)
+          {
+               printf("Course [%d] = ",(Count+ONE));
+               scanf("%hhd",&Student_Data.Courses_ID[Count]);
+          }
+          Student_Data.Courses_ID[Courses]=ZERO;
           Queue_Enqueue(Data_Base,Student_Data);
      }
      else
      {
-          printf("You Have Entered Rebeated ID !\n");
+          printf("xx You Have Entered Rebeated ID xx\n");
           Flag=Repeated_ID;
      }
      return Flag;
@@ -220,8 +327,6 @@ DataBase_Status Add_Student(queue_t *Data_Base)
 * Syntax          : Serch_By_First_Name(students_t Student_Data) && void Check_First_Name(students_t Student_Data)
 * Description     : Print One Student Function
 * Parameters (in) : (Pointer to Student Data)
-* Pointers used (in Check_First_Name)   (1): ptr1 >>> Student_Data.F_Name for first name stored in database // 
-                                        (2): ptr2 >>> Global_F_Name for global name we entered in Serch_By_First_Name()//
 ********************************************************************/
 DataBase_Status Serch_By_First_Name(queue_t *Data_Base)
 {
@@ -229,41 +334,23 @@ DataBase_Status Serch_By_First_Name(queue_t *Data_Base)
      printf("-------------------------------------------------\n");
      printf("Enter First Name :");
      scanf("%s",Global_F_Name); 
-     //printf("%s",Global_F_Name);
-     //scanf("%[^\n]s",& Global_F_Name);
-     //char * fname = "amh" ;
-     //Global_F_Name =fname ; 
-     //printf("%s",Global_F_Name) ; 
-     Global_Match == 0 ;
+     Global_Flag=Name_Not_Found;
      Queue_Traverse(Data_Base,Check_First_Name);
-     if(Global_Match == 0)printf("Name not found");
+     if(Global_Flag==Name_Not_Found)printf("xx Name Not Found xx\n");
      return Global_Flag ;    
 }
-
-
 void Check_First_Name(students_t Student_Data)
 {
-     const char *ptr1 ,*ptr2 ;
-     //puts(Global_F_Name);
-     Global_Flag=Name_Not_Found;     
-     ptr1 =(const char *)Student_Data.F_Name; 
-     ptr2 =(const char *)Global_F_Name; 
-     int result = strcmp(ptr1,ptr2) ;
-     //printf("%d",result);
-     while(result==0)
+     if(!strcmp(Student_Data.F_Name,Global_F_Name))
      {
-          printf("Student Found Successfully:\n") ;    
-          Print_Student(Student_Data); 
+          Print_Student(Student_Data);
           Global_Flag = Operation_Done ;
-          Global_Match = 1 ;
-          break;
      }
 }
 /********************************************************************
-* Syntax          : Search_By_ID(students_t Student_Data) && void Check_ID(students_t Student_Data)
-* Description     : Search for ID
-* Parameters (in) : (Pointer to Student Data)
-* Pointers used (in Search_By_ID)  
+* Syntax          : DataBase_Status Search_By_ID(queue_t *Data_Base)
+* Description     : Search for Student By ID
+* Parameters (in) : (Ptr Of Data_Base)
 ********************************************************************/
 DataBase_Status Search_By_ID(queue_t *Data_Base)
 {
@@ -275,7 +362,7 @@ DataBase_Status Search_By_ID(queue_t *Data_Base)
      Queue_Traverse(Data_Base,Check_ID);
      if(Global_Match == 0)
      {
-          printf("ID not found\n");
+          printf("xx ID Not Found xx\n");
           Global_Flag = ID_Not_Found; 
      }
      return Global_Flag ; 
@@ -285,7 +372,7 @@ void Check_ID (students_t Student_Data)
      Global_Flag = Operation_Done ;
      if(Global_ID == Student_Data.ID)
      {
-          printf("ID found....\n");
+          printf("ID found ....\n");
           Print_Student(Student_Data);
           Global_Match = 1 ;
      }

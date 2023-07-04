@@ -14,13 +14,61 @@
 ----------    GLOBAL DATA     ------------
 *****************************************/
 /********************************************************************
-* Syntax          : queue_error Queue_Traverse(queue_t *my_queue,void (*function)(storage_type))
-* Description     : Traverse Function To Queue
-* Sync-Async      : *
-* Reentrancy      : *
+* Syntax          : queue_error Queue_Dequeue_Node(queue_t *my_queue,u8 Node_Number)
+* Description     : Delete Specific Node In Queue
+* Parameters (in) : (Ptr To Queue) (Node Number)
+* Parameters (out): None
+* Return value:   : queue_error
+********************************************************************/
+queue_error Queue_Dequeue_Node(queue_t *my_queue,u8 Node_Number)
+{
+     queue_error flag=Queue_Ok;
+#if Memory_Mode == Array
+     if((my_queue->size))
+     {
+          for(u8 Counter=Node_Number-ONE;Counter<my_queue->size;Counter++)
+          {
+               my_queue->elements[Counter]=my_queue->elements[Counter+1];
+          }
+          my_queue->size--;
+     }
+     else flag=Queue_Empty;
+#else
+     #error Not Implemented
+#endif
+     return flag;
+}
+/********************************************************************
+* Syntax          : queue_error Queue_Traverse_Origin(queue_t *my_queue,void (*function)(storage_type*))
+* Description     : Traverse Function To Queue But With Pointer In Case Of Edit Content 
 * Parameters (in) : (Ptr To Queue) (Ptr To Function)
 * Parameters (out): None
-* Return value:   : stack_error
+* Return value:   : queue_error
+********************************************************************/
+queue_error Queue_Traverse_Origin(queue_t *my_queue,void (*function)(storage_type*))
+{
+     queue_error flag=Queue_Ok;
+#if Memory_Mode == Array
+     if((my_queue->size))
+     {
+          for(u8 Index=my_queue->front,Counter=ZERO;Counter<my_queue->size;Counter++)
+          {
+               function(&(my_queue->elements[Index]));
+               Index=(Index+1)%queue_size;
+          }
+     }
+     else flag=Queue_Empty;
+#else
+     #error Not Implemented
+#endif
+     return flag;
+}
+/********************************************************************
+* Syntax          : queue_error Queue_Traverse(queue_t *my_queue,void (*function)(storage_type))
+* Description     : Traverse Function To Queue
+* Parameters (in) : (Ptr To Queue) (Ptr To Function)
+* Parameters (out): None
+* Return value:   : queue_error
 ********************************************************************/
 queue_error Queue_Traverse(queue_t *my_queue,void (*function)(storage_type))
 {
@@ -54,7 +102,7 @@ queue_error Queue_Traverse(queue_t *my_queue,void (*function)(storage_type))
 * Reentrancy      : *
 * Parameters (in) : (Ptr To Queue) (Copy Of Data)
 * Parameters (out): None
-* Return value:   : stack_error
+* Return value:   : queue_error
 ********************************************************************/
 queue_error Queue_Enqueue(queue_t *my_queue,storage_type data)
 {
@@ -95,7 +143,7 @@ queue_error Queue_Enqueue(queue_t *my_queue,storage_type data)
 * Reentrancy      : *
 * Parameters (in) : (Ptr To Queue) (Ptr To Storage Data)
 * Parameters (out): None
-* Return value:   : stack_error
+* Return value:   : queue_error
 ********************************************************************/
 queue_error Queue_Dequeue(queue_t *my_queue,storage_type *data)
 {
@@ -133,7 +181,7 @@ queue_error Queue_Dequeue(queue_t *my_queue,storage_type *data)
 * Reentrancy      : *
 * Parameters (in) : (Ptr To Queue)
 * Parameters (out): None
-* Return value:   : stack_error
+* Return value:   : queue_error
 ********************************************************************/
 queue_error Queue_Initialization(queue_t *my_queue)
 {
@@ -156,7 +204,7 @@ queue_error Queue_Initialization(queue_t *my_queue)
 * Reentrancy      : *
 * Parameters (in) : (Ptr To Queue)
 * Parameters (out): None
-* Return value:   : stack_error
+* Return value:   : queue_error
 ********************************************************************/
 queue_error Queue_Clear(queue_t *my_queue)
 {
